@@ -1,0 +1,21 @@
+# Cursor Guidelines
+
+## Deprecated Elements
+- **NEVER** use deprecated React Native components or APIs
+- Always use the latest recommended alternatives:
+  - Use `SafeAreaView` from `react-native-safe-area-context` instead of `react-native`'s deprecated `SafeAreaView`
+  - **IMPORTANT**: When using `SafeAreaView` from `react-native-safe-area-context`, the app must be wrapped in `SafeAreaProvider` at the root level (typically in `App.tsx`)
+  - Check React Native and Expo documentation for current best practices
+  - When you see deprecation warnings, immediately replace with modern alternatives
+
+## Code Quality
+- Prefer TypeScript types over `any`
+- Use functional components with hooks
+- Follow React Native and Expo best practices
+- Keep components modular and reusable
+
+## Dependencies
+- When using Expo, prefer Expo-managed packages when available
+- Check if packages are compatible with the current Expo SDK version
+- Use `react-native-safe-area-context` for safe area handling in modern React Native apps
+

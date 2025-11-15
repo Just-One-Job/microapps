@@ -23,9 +23,15 @@ export const BillInput: React.FC<BillInputProps> = ({ value, onChange }) => {
   const handleNumberPress = (num: string) => {
     triggerHaptic('light');
     const newValue = displayValue + num;
+    // Limit to reasonable bill amount (max $999,999.99)
     const numericValue = parseFloat(newValue) || 0;
-    setDisplayValue(newValue);
-    onChange(numericValue);
+    if (numericValue <= 999999.99) {
+      setDisplayValue(newValue);
+      onChange(numericValue);
+    } else {
+      // Provide haptic feedback for invalid input
+      triggerHaptic('error');
+    }
   };
 
   const handleBackspace = () => {
@@ -44,9 +50,15 @@ export const BillInput: React.FC<BillInputProps> = ({ value, onChange }) => {
 
   const handleDecimal = () => {
     triggerHaptic('light');
-    if (!displayValue.includes('.')) {
+    // Only allow decimal if there's already a number and no decimal exists
+    if (displayValue && !displayValue.includes('.')) {
       const newValue = displayValue + '.';
       setDisplayValue(newValue);
+    } else if (!displayValue) {
+      // If empty, start with "0."
+      const newValue = '0.';
+      setDisplayValue(newValue);
+      onChange(0);
     }
   };
 
@@ -76,10 +88,19 @@ export const BillInput: React.FC<BillInputProps> = ({ value, onChange }) => {
           style={[styles.input, { color: colors.text }]}
           value={displayValue}
           onChangeText={(text) => {
-            const numericText = text.replace(/[^0-9.]/g, '');
-            setDisplayValue(numericText);
+            // Remove non-numeric characters except decimal
+            let numericText = text.replace(/[^0-9.]/g, '');
+            // Prevent multiple decimals
+            const parts = numericText.split('.');
+            if (parts.length > 2) {
+              numericText = parts[0] + '.' + parts.slice(1).join('');
+            }
+            // Limit to reasonable amount
             const numericValue = parseFloat(numericText) || 0;
-            onChange(numericValue);
+            if (numericValue <= 999999.99) {
+              setDisplayValue(numericText);
+              onChange(numericValue);
+            }
           }}
           placeholder="0.00"
           placeholderTextColor={colors.textSecondary}

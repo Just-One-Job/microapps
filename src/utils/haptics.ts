@@ -1,6 +1,12 @@
+import { Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 export const triggerHaptic = (type: 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error' = 'light') => {
+  // Haptics are not available on web, silently skip
+  if (Platform.OS === 'web') {
+    return;
+  }
+
   try {
     switch (type) {
       case 'light':

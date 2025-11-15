@@ -106,10 +106,23 @@ export const TipPercentageSelector: React.FC<TipPercentageSelectorProps> = ({
             <TextInput
               style={[styles.modalInput, { borderColor: colors.border, color: colors.text }]}
               value={customValue}
-              onChangeText={setCustomValue}
-              placeholder="0"
+              onChangeText={(text) => {
+                // Allow numbers and one decimal point, max 100
+                const numericText = text.replace(/[^0-9.]/g, '');
+                const parts = numericText.split('.');
+                // Prevent multiple decimals
+                const cleaned = parts.length > 2 
+                  ? parts[0] + '.' + parts.slice(1).join('') 
+                  : numericText;
+                // Limit to 100
+                const numValue = parseFloat(cleaned);
+                if (isNaN(numValue) || numValue <= 100) {
+                  setCustomValue(cleaned);
+                }
+              }}
+              placeholder="15.5"
               placeholderTextColor={colors.textSecondary}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               autoFocus
             />
             <View style={styles.modalButtons}>

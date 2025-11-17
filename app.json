@@ -12,10 +12,14 @@
       "backgroundColor": "#369df4"
     },
     "ios": {
-      "bundleIdentifier": "com.justonejobapps.tipcalculator"
+      "bundleIdentifier": "com.justonejobapps.tipandsplit",
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
-      "package": "com.justonejobapps.tipcalculator",
+      "package": "com.justonejobapps.tipandsplit",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#369df4"
@@ -28,6 +32,11 @@
       "favicon": "./assets/favicon.png",
       "themeColor": "#369df4",
       "backgroundColor": "#369df4"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "40d8cecf-eb84-4c87-bc44-90b7cce81c9a"
+      }
     }
   }
 }

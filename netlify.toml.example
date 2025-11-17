@@ -1,0 +1,28 @@
+# Example netlify.toml for a monorepo app
+# Copy this to your app directory and customize as needed
+
+[build]
+  # Base directory - must be repo root for monorepo workspace support
+  base = "../.."
+  
+  # Build command - runs from repo root, installs deps and builds this app
+  # Update "your-app-name" to match your app directory name
+  command = "npm run build:netlify:your-app-name"
+  
+  # Publish directory - relative to base (repo root)
+  # Update "your-app-name" to match your app directory name
+  publish = "apps/your-app-name/dist"
+
+[build.environment]
+  # Use Node.js 22 (matching your local setup)
+  NODE_VERSION = "22"
+  
+  # Enable npm workspaces
+  NPM_FLAGS = "--legacy-peer-deps"
+
+# Redirects for SPA routing (if needed)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+

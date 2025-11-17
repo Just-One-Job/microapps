@@ -1,34 +1,59 @@
 # Netlify Deployment Guide
 
-This monorepo uses Bun's `workspace:*` protocol for workspace dependencies, which is not supported by npm (used by Netlify). This guide explains how deployment works.
+This monorepo uses `file:` links for workspace dependencies, which are compatible with both npm and Bun. This makes deployment straightforward on Netlify.
 
 ## How It Works
 
-1. **Local Development**: Uses Bun with `workspace:*` protocol
-2. **Netlify CI**: Automatically converts `workspace:*` to `file:` paths for npm compatibility
+1. **Local Development**: Uses Bun (or npm) with `file:` protocol for workspace dependencies
+2. **Netlify CI**: Uses npm with the same `file:` links - no conversion needed
 
 ## Build Process
 
 The build process on Netlify:
 
-1. **Automatic `preinstall` hook**: Before `npm install` runs, the `preinstall` script automatically converts `workspace:*` to `file:` paths
-2. **Dependency installation**: Netlify runs `npm install` at the root (monorepo-aware)
-3. **Build**: Runs `npm --workspace=apps/tip-calculator run build:web` to build the app
-4. **Publish**: Publishes the `apps/tip-calculator/dist` directory
+1. **Dependency installation**: Netlify runs `npm install` at the root (monorepo-aware via npm workspaces)
+2. **Build**: Runs `npm --workspace=apps/tip-calculator run build:web` to build the app
+3. **Publish**: Publishes the `apps/tip-calculator/dist` directory
 
 ## Configuration
 
 ### netlify.toml
 
+Each app has its own `netlify.toml` file in its directory (e.g., `apps/tip-calculator/netlify.toml`). This keeps app-specific configuration separate from the root.
+
 The `netlify.toml` file configures:
-- Build command: `npm run build:netlify:tip`
-- Publish directory: `apps/tip-calculator/dist`
+- Base directory: `../..` (repo root, required for monorepo workspace support)
+- Build command: `npm run build:netlify:tip` (runs from repo root)
+- Publish directory: `apps/tip-calculator/dist` (relative to base)
 - Node.js version: 22
+
+**Note**: When setting up a Netlify site, configure it to use the app's `netlify.toml` file:
+- In Netlify dashboard: Site settings → Build & deploy → Build settings
+- Set "Config file" to `apps/tip-calculator/netlify.toml`
 
 ### Scripts
 
-- `preinstall`: Automatically runs before `npm install` to convert workspace dependencies (only when using npm, skips when using bun)
-- `build:netlify:tip`: Builds the tip-calculator app using npm workspaces
+- `build:netlify:tip`: Installs dependencies and builds the tip-calculator app using npm workspaces
+- `build:netlify:deal`: Installs dependencies and builds the deal-steal app using npm workspaces
+
+## Workspace Dependencies
+
+All workspace packages use `file:` links in their dependencies:
+
+```json
+{
+  "dependencies": {
+    "@just-one-job/theme": "file:../../packages/theme",
+    "@just-one-job/utils": "file:../../packages/utils"
+  }
+}
+```
+
+This approach:
+- ✅ Works with npm (used by Netlify)
+- ✅ Works with Bun (for local development)
+- ✅ No conversion scripts needed
+- ✅ Simple and reliable
 
 ## Adding New Apps
 
@@ -36,43 +61,53 @@ When adding a new app that needs to be deployed:
 
 1. Add a new build script in root `package.json`:
    ```json
-   "build:netlify:new-app": "npm run prepare:npm && npm install && cd apps/new-app && npm run build:web"
+   "build:netlify:new-app": "npm install && npm --workspace=apps/new-app run build:web"
    ```
 
-2. Create a new Netlify site or update `netlify.toml` with app-specific settings
+2. Create a `netlify.toml` file in the app's directory (e.g., `apps/new-app/netlify.toml`):
+   ```toml
+   [build]
+     base = "../.."
+     command = "npm run build:netlify:new-app"
+     publish = "apps/new-app/dist"
+   
+   [build.environment]
+     NODE_VERSION = "22"
+     NPM_FLAGS = "--legacy-peer-deps"
+   
+   [[redirects]]
+     from = "/*"
+     to = "/index.html"
+     status = 200
+   ```
 
-## Local npm Usage
+3. Create a new Netlify site and configure it to use the app's `netlify.toml` file
 
-If you need to use `npm install` locally (instead of `bun install`), you must convert the workspace dependencies first:
+## Using Bun on Netlify (Optional)
 
-```bash
-npm run prepare:npm && npm install
-```
+Netlify now supports Bun! If you want to use Bun instead of npm:
 
-Or use the convenience script:
-
-```bash
-npm run install:npm
-```
-
-**Note**: The `preinstall` hook doesn't run early enough for npm to parse workspace dependencies, so manual conversion is required for local npm usage. This is automatic on Netlify CI.
+1. Ensure `bun.lockb` is committed to your repo
+2. Netlify will automatically detect it and use `bun install`
+3. Update build commands to use `bun` instead of `npm`:
+   ```json
+   "build:netlify:tip": "bun install && bun --workspace=apps/tip-calculator run build:web"
+   ```
 
 ## Troubleshooting
 
-### Build fails with "workspace:*" error
+### Build fails with dependency errors
 
-- Make sure `prepare:npm` script runs before `npm install`
-- Check that `NETLIFY=true` environment variable is set (automatically set by Netlify)
-- For local npm usage, run `npm run prepare:npm` first
+- Ensure all workspace packages are properly listed in the root `package.json` `workspaces` array
+- Verify `file:` paths are correct relative to each app's `package.json`
+- Check that package versions match between packages and apps (if using semver instead of `file:`)
 
 ### Dependencies not found
 
-- Ensure all workspace packages are listed in `scripts/prepare-npm-workspaces.js`
 - Verify package paths are correct relative to the app directory
+- Ensure workspace packages have valid `package.json` files with proper `name` and `version` fields
 
 ### Can't run `npm install` locally
 
 - Use `bun install` instead (recommended for local development)
-- Or run `npm run install:npm` which converts dependencies first
-- Or manually run `npm run prepare:npm && npm install`
-
+- Or use `npm install` directly - it works with `file:` links

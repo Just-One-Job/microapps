@@ -1,11 +1,11 @@
 [build]
-  # Base directory for the build
-  base = "."
+  # Base directory - must be repo root for monorepo workspace support
+  base = "../.."
   
-  # Build command - installs deps and builds the tip-calculator app
+  # Build command - runs from repo root, installs deps and builds this app
   command = "npm run build:netlify:tip"
   
-  # Publish directory - where the built files are
+  # Publish directory - relative to base (repo root)
   publish = "apps/tip-calculator/dist"
 
 [build.environment]

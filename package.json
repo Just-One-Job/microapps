@@ -12,10 +12,7 @@
     "dev:deal": "cd apps/deal-steal && bunx expo start",
     "web:deal": "cd apps/deal-steal && bunx expo start --web",
     "build:web:deal": "cd apps/deal-steal && bun run build:web",
-    "prepare:npm": "node scripts/prepare-npm-workspaces.js",
-    "preinstall": "node scripts/prepare-npm-workspaces.js",
-    "install:npm": "npm run prepare:npm && npm install",
-    "build:netlify:tip": "npm --workspace=apps/tip-calculator run build:web",
-    "build:netlify:deal": "npm --workspace=apps/deal-steal run build:web"
+    "build:netlify:tip": "npm install && npm --workspace=apps/tip-calculator run build:web",
+    "build:netlify:deal": "npm install && npm --workspace=apps/deal-steal run build:web"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@just-one-job/tip-calculator",
+  "name": "@just-one-job/deal-steal",
   "private": true,
   "version": "1.0.0",
   "main": "index.ts",
@@ -44,7 +44,8 @@
     "type": "git"
   },
   "keywords": [
-    "tip-calculator",
+    "discount-calculator",
+    "deal-calculator",
     "react-native",
     "expo",
     "calculator",
@@ -52,3 +53,4 @@
     "typescript"
   ]
 }
+

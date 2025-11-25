@@ -1,30 +1,30 @@
 {
   "expo": {
-    "name": "Tip Calculator",
+    "name": "TotalTip",
     "slug": "tip-calculator",
+    "scheme": "totaltip",
     "version": "1.0.0",
-    "description": "Fast, privacy-first tip calculator by Just One Job Apps. No ads, no tracking.",
     "orientation": "portrait",
+    "description": "Fast, privacy-first tip calculator by Just One Job Apps. No ads, no tracking.",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#369df4"
+      "backgroundColor": "#ffffff"
     },
     "ios": {
+      "supportsTablet": false,
       "bundleIdentifier": "com.justonejobapps.tipandsplit",
-      "buildNumber": "1.0.0",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
-      "package": "com.justonejobapps.tipandsplit",
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#369df4"
-      }
+      "package": "com.justonejobapps.tipandsplit"
     },
+    "plugins": [
+      "expo-build-properties"
+    ],
     "web": {
       "name": "Tip Calculator · Just One Job Apps",
       "shortName": "Tip Calculator",

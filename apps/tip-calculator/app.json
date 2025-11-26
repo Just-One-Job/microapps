@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#369df4"
+      "backgroundColor": "#151e2a"
     },
     "ios": {
       "supportsTablet": false,
@@ -30,8 +30,8 @@
       "shortName": "Tip Calculator",
       "description": "Fast, privacy-first tip calculator. No ads, no analytics, no subscriptions.",
       "favicon": "./assets/favicon.png",
-      "themeColor": "#369df4",
-      "backgroundColor": "#369df4"
+      "themeColor": "#151e2a",
+      "backgroundColor": "#151e2a"
     },
     "extra": {
       "eas": {

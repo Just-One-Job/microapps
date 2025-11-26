@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import { useTheme, spacing } from '@just-one-job/theme';
 import { TipResult } from '../types';
 
@@ -12,6 +12,8 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
   result,
   splitCount,
 }) => {
+  const { width } = useWindowDimensions();
+  const isSmallDevice = width < 380;
   const { colors } = useTheme();
 
   const formatCurrency = (amount: number): string => {
@@ -25,16 +27,60 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { color: colors.text }]}>Summary</Text>
-      <View style={[styles.summaryCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+      <Text
+        style={[
+          styles.title,
+          { color: colors.text },
+          isSmallDevice && styles.titleSmall,
+        ]}
+      >
+        Summary
+      </Text>
+      <View
+        style={[
+          styles.summaryCard,
+          { backgroundColor: colors.surface, borderColor: colors.border },
+          isSmallDevice && styles.summaryCardSmall,
+        ]}
+      >
         <View style={styles.summaryRow}>
-          <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Tip Amount</Text>
-          <Text style={[styles.summaryValue, { color: colors.text }]}>{formatCurrency(result.tipAmount)}</Text>
+          <Text
+            style={[
+              styles.summaryLabel,
+              { color: colors.textSecondary },
+              isSmallDevice && styles.summaryLabelSmall,
+            ]}
+          >
+            Tip Amount
+          </Text>
+          <Text
+            style={[
+              styles.summaryValue,
+              { color: colors.text },
+              isSmallDevice && styles.summaryValueSmall,
+            ]}
+          >
+            {formatCurrency(result.tipAmount)}
+          </Text>
         </View>
         <View style={[styles.divider, { backgroundColor: colors.border }]} />
         <View style={styles.summaryRow}>
-          <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Total with Tip</Text>
-          <Text style={[styles.summaryValue, { color: colors.text }]}>
+          <Text
+            style={[
+              styles.summaryLabel,
+              { color: colors.textSecondary },
+              isSmallDevice && styles.summaryLabelSmall,
+            ]}
+          >
+            Total with Tip
+          </Text>
+          <Text
+            style={[
+              styles.summaryValue,
+              { color: colors.text },
+              isSmallDevice && styles.summaryValueSmall,
+            ]}
+          >
             {formatCurrency(result.totalWithTip)}
           </Text>
         </View>
@@ -42,10 +88,23 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
           <>
             <View style={[styles.divider, { backgroundColor: colors.border }]} />
             <View style={styles.summaryRow}>
-              <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>
+              <Text
+                style={[
+                  styles.summaryLabel,
+                  { color: colors.textSecondary },
+                  isSmallDevice && styles.summaryLabelSmall,
+                ]}
+              >
                 Per Person ({splitCount} {splitCount === 1 ? 'person' : 'people'})
               </Text>
-              <Text style={[styles.summaryValue, styles.perPersonValue, { color: colors.primary }]}>
+              <Text
+                style={[
+                  styles.summaryValue,
+                  styles.perPersonValue,
+                  { color: colors.primary },
+                  isSmallDevice && styles.perPersonValueSmall,
+                ]}
+              >
                 {formatCurrency(result.perPersonTotal)}
               </Text>
             </View>
@@ -65,10 +124,16 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: spacing.md,
   },
+  titleSmall: {
+    fontSize: 18,
+  },
   summaryCard: {
     borderRadius: 12,
     padding: spacing.lg,
     borderWidth: 1,
+  },
+  summaryCardSmall: {
+    padding: spacing.md,
   },
   summaryRow: {
     flexDirection: 'row',
@@ -79,17 +144,25 @@ const styles = StyleSheet.create({
   summaryLabel: {
     fontSize: 16,
   },
+  summaryLabelSmall: {
+    fontSize: 15,
+  },
   summaryValue: {
     fontSize: 18,
     fontWeight: '600',
   },
+  summaryValueSmall: {
+    fontSize: 17,
+  },
   perPersonValue: {
     fontSize: 20,
     fontWeight: '700',
+  },
+  perPersonValueSmall: {
+    fontSize: 19,
   },
   divider: {
     height: 1,
     marginVertical: spacing.sm,
   },
 });
-

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, useWindowDimensions } from 'react-native';
 import { useTheme, spacing } from '@just-one-job/theme';
 import { triggerHaptic } from '@just-one-job/utils';
 
@@ -16,6 +16,8 @@ export const SplitSelector: React.FC<SplitSelectorProps> = ({
   onDecrement,
   onChange,
 }) => {
+  const { width } = useWindowDimensions();
+  const isSmallDevice = width < 380;
   const { colors } = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value.toString());
@@ -55,11 +57,26 @@ export const SplitSelector: React.FC<SplitSelectorProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.text }]}>Split Bill</Text>
-      <View style={[styles.selectorContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+      <Text
+        style={[
+          styles.label,
+          { color: colors.text },
+          isSmallDevice && styles.labelSmall,
+        ]}
+      >
+        Split Bill
+      </Text>
+      <View
+        style={[
+          styles.selectorContainer,
+          { backgroundColor: colors.surface, borderColor: colors.border },
+          isSmallDevice && styles.selectorContainerSmall,
+        ]}
+      >
         <TouchableOpacity
           style={[
             styles.button,
+            isSmallDevice && styles.buttonSmall,
             { backgroundColor: value <= 1 ? colors.disabled : colors.primary },
           ]}
           onPress={handleDecrement}
@@ -81,7 +98,11 @@ export const SplitSelector: React.FC<SplitSelectorProps> = ({
         >
           {isEditing ? (
             <TextInput
-              style={[styles.valueInput, { color: colors.text }]}
+              style={[
+                styles.valueInput,
+                { color: colors.text },
+                isSmallDevice && styles.valueInputSmall,
+              ]}
               value={editValue}
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, '');
@@ -97,15 +118,29 @@ export const SplitSelector: React.FC<SplitSelectorProps> = ({
             />
           ) : (
             <>
-              <Text style={[styles.valueText, { color: colors.text }]}>{value}</Text>
-              <Text style={[styles.valueLabel, { color: colors.textSecondary }]}>
+              <Text
+                style={[
+                  styles.valueText,
+                  { color: colors.text },
+                  isSmallDevice && styles.valueTextSmall,
+                ]}
+              >
+                {value}
+              </Text>
+              <Text
+                style={[
+                  styles.valueLabel,
+                  { color: colors.textSecondary },
+                  isSmallDevice && styles.valueLabelSmall,
+                ]}
+              >
                 {value === 1 ? 'person' : 'people'}
               </Text>
             </>
           )}
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: colors.primary }]}
+          style={[styles.button, { backgroundColor: colors.primary }, isSmallDevice && styles.buttonSmall]}
           onPress={handleIncrement}
         >
           <Text style={[styles.buttonText, { color: colors.surface }]}>+</Text>
@@ -124,6 +159,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: spacing.sm,
   },
+  labelSmall: {
+    fontSize: 15,
+  },
   selectorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -131,12 +169,20 @@ const styles = StyleSheet.create({
     padding: spacing.sm,
     borderWidth: 1,
   },
+  selectorContainerSmall: {
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.sm,
+  },
   button: {
     width: 50,
     height: 50,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  buttonSmall: {
+    width: 44,
+    height: 44,
   },
   buttonText: {
     fontSize: 24,
@@ -152,15 +198,24 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '700',
   },
+  valueTextSmall: {
+    fontSize: 28,
+  },
   valueInput: {
     fontSize: 32,
     fontWeight: '700',
     textAlign: 'center',
     minWidth: 80,
   },
+  valueInputSmall: {
+    fontSize: 28,
+    minWidth: 70,
+  },
   valueLabel: {
     fontSize: 14,
     marginTop: spacing.xs,
   },
+  valueLabelSmall: {
+    fontSize: 13,
+  },
 });
-

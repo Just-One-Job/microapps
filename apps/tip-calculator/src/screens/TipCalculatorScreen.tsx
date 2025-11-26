@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ScrollView, Text } from "react-native";
+import { View, StyleSheet, ScrollView, Text, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { BillInput } from "../components/BillInput";
@@ -11,6 +11,8 @@ import { useTipCalculator } from "../hooks/useTipCalculator";
 import { useTheme, spacing } from "@just-one-job/theme";
 
 export const TipCalculatorScreen: React.FC = () => {
+  const { width } = useWindowDimensions();
+  const isSmallDevice = width < 380;
   const { colors, isDark } = useTheme();
   const {
     state,
@@ -29,10 +31,22 @@ export const TipCalculatorScreen: React.FC = () => {
       <StatusBar style={isDark ? "light" : "dark"} />
       <View style={styles.header}>
         <View style={styles.titleContainer}>
-          <Text style={[styles.title, { color: colors.text }]}>
+          <Text
+            style={[
+              styles.title,
+              { color: colors.text },
+              isSmallDevice && styles.titleSmall,
+            ]}
+          >
             Tip & Split
           </Text>
-          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+          <Text
+            style={[
+              styles.subtitle,
+              { color: colors.textSecondary },
+              isSmallDevice && styles.subtitleSmall,
+            ]}
+          >
             Calculate tips and split bills
           </Text>
         </View>
@@ -84,11 +98,17 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: spacing.xs / 2,
   },
+  titleSmall: {
+    fontSize: 24,
+  },
   subtitle: {
     fontSize: 12,
     fontWeight: "500",
     textTransform: "uppercase",
     letterSpacing: 0.5,
+  },
+  subtitleSmall: {
+    fontSize: 11,
   },
   scrollView: {
     flex: 1,

@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#369df4"
+      "backgroundColor": "#151e2a"
     },
     "ios": {
       "bundleIdentifier": "com.justonejobapps.dealandsteal",
@@ -22,7 +22,7 @@
       "package": "com.justonejobapps.dealandsteal",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#369df4"
+        "backgroundColor": "#151e2a"
       }
     },
     "web": {
@@ -30,8 +30,8 @@
       "shortName": "Deal & Steal",
       "description": "Fast, privacy-first discount calculator. Get the deal, steal the price. No ads, no analytics, no subscriptions.",
       "favicon": "./assets/favicon.png",
-      "themeColor": "#369df4",
-      "backgroundColor": "#369df4"
+      "themeColor": "#151e2a",
+      "backgroundColor": "#151e2a"
     },
     "extra": {
       "eas": {

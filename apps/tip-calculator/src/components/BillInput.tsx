@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Keyboard,
+  useWindowDimensions,
 } from 'react-native';
 import { useTheme, spacing } from '@just-one-job/theme';
 import { triggerHaptic } from '@just-one-job/utils';
@@ -16,6 +17,8 @@ interface BillInputProps {
 }
 
 export const BillInput: React.FC<BillInputProps> = ({ value, onChange }) => {
+  const { width } = useWindowDimensions();
+  const isSmallDevice = width < 380;
   const { colors } = useTheme();
   const [displayValue, setDisplayValue] = useState(value > 0 ? value.toString() : '');
 
@@ -80,11 +83,37 @@ export const BillInput: React.FC<BillInputProps> = ({ value, onChange }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.text }]}>Bill Amount</Text>
-      <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-        <Text style={[styles.currencySymbol, { color: colors.text }]}>$</Text>
+      <Text
+        style={[
+          styles.label,
+          { color: colors.text },
+          isSmallDevice && styles.labelSmall,
+        ]}
+      >
+        Bill Amount
+      </Text>
+      <View
+        style={[
+          styles.inputContainer,
+          { backgroundColor: colors.surface, borderColor: colors.border },
+          isSmallDevice && styles.inputContainerSmall,
+        ]}
+      >
+        <Text
+          style={[
+            styles.currencySymbol,
+            { color: colors.text },
+            isSmallDevice && styles.currencySymbolSmall,
+          ]}
+        >
+          $
+        </Text>
         <TextInput
-          style={[styles.input, { color: colors.text }]}
+          style={[
+            styles.input,
+            { color: colors.text },
+            isSmallDevice && styles.inputSmall,
+          ]}
           value={displayValue}
           onChangeText={(text) => {
             // Remove non-numeric characters except decimal
@@ -108,7 +137,15 @@ export const BillInput: React.FC<BillInputProps> = ({ value, onChange }) => {
           onSubmitEditing={Keyboard.dismiss}
         />
         {value > 0 && (
-          <Text style={[styles.formattedValue, { color: colors.textSecondary }]}>{formatCurrency(value)}</Text>
+          <Text
+            style={[
+              styles.formattedValue,
+              { color: colors.textSecondary },
+              isSmallDevice && styles.formattedValueSmall,
+            ]}
+          >
+            {formatCurrency(value)}
+          </Text>
         )}
       </View>
 
@@ -120,11 +157,23 @@ export const BillInput: React.FC<BillInputProps> = ({ value, onChange }) => {
                 return (
                   <TouchableOpacity
                     key={button}
-                    style={[styles.keypadButton, { backgroundColor: colors.background, borderColor: colors.border }]}
+                    style={[
+                      styles.keypadButton,
+                      { backgroundColor: colors.background, borderColor: colors.border },
+                      isSmallDevice && styles.keypadButtonSmall,
+                    ]}
                     onPress={handleBackspace}
                     onLongPress={handleClear}
                   >
-                    <Text style={[styles.keypadButtonText, { color: colors.text }]}>{button}</Text>
+                    <Text
+                      style={[
+                        styles.keypadButtonText,
+                        { color: colors.text },
+                        isSmallDevice && styles.keypadButtonTextSmall,
+                      ]}
+                    >
+                      {button}
+                    </Text>
                   </TouchableOpacity>
                 );
               }
@@ -132,20 +181,44 @@ export const BillInput: React.FC<BillInputProps> = ({ value, onChange }) => {
                 return (
                   <TouchableOpacity
                     key={button}
-                    style={[styles.keypadButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
+                    style={[
+                      styles.keypadButton,
+                      { backgroundColor: colors.surface, borderColor: colors.border },
+                      isSmallDevice && styles.keypadButtonSmall,
+                    ]}
                     onPress={handleDecimal}
                   >
-                    <Text style={[styles.keypadButtonText, { color: colors.text }]}>{button}</Text>
+                    <Text
+                      style={[
+                        styles.keypadButtonText,
+                        { color: colors.text },
+                        isSmallDevice && styles.keypadButtonTextSmall,
+                      ]}
+                    >
+                      {button}
+                    </Text>
                   </TouchableOpacity>
                 );
               }
               return (
                 <TouchableOpacity
                   key={button}
-                  style={[styles.keypadButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
+                  style={[
+                    styles.keypadButton,
+                    { backgroundColor: colors.surface, borderColor: colors.border },
+                    isSmallDevice && styles.keypadButtonSmall,
+                  ]}
                   onPress={() => handleNumberPress(button)}
                 >
-                  <Text style={[styles.keypadButtonText, { color: colors.text }]}>{button}</Text>
+                  <Text
+                    style={[
+                      styles.keypadButtonText,
+                      { color: colors.text },
+                      isSmallDevice && styles.keypadButtonTextSmall,
+                    ]}
+                  >
+                    {button}
+                  </Text>
                 </TouchableOpacity>
               );
             })}
@@ -165,6 +238,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: spacing.sm,
   },
+  labelSmall: {
+    fontSize: 15,
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -173,10 +249,17 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     borderWidth: 1,
   },
+  inputContainerSmall: {
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+  },
   currencySymbol: {
     fontSize: 24,
     fontWeight: '600',
     marginRight: spacing.sm,
+  },
+  currencySymbolSmall: {
+    fontSize: 22,
   },
   input: {
     flex: 1,
@@ -184,9 +267,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     minWidth: 100,
   },
+  inputSmall: {
+    fontSize: 22,
+  },
   formattedValue: {
     fontSize: 18,
     marginLeft: spacing.sm,
+  },
+  formattedValueSmall: {
+    fontSize: 16,
   },
   keypad: {
     gap: spacing.sm,
@@ -204,9 +293,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     minHeight: 60,
   },
+  keypadButtonSmall: {
+    padding: spacing.sm + 2,
+    minHeight: 54,
+  },
   keypadButtonText: {
     fontSize: 24,
     fontWeight: '600',
   },
+  keypadButtonTextSmall: {
+    fontSize: 22,
+  },
 });
-
